@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Pomodoro</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+    
+		<center>
+            <div class="row">
+                <div class="col-md-12">
+                    <h1> A Pomodoro Clock </h1>
+                    <h3> By Yours Truly</h3>
+            
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 controls">
+                    <h4>Break Length</h4>
+                    <div class="btn-group">
+                        <div class="btn btn-default btn-lg switchDeduceBreak" onclick="deduceBreakTime()">-</div>
+                        <div class="btn btn-lg" id="timer-break">5</div>
+                        <div class="btn btn-default btn-lg switchAddBreak" onclick="addBreakTime()">+</div>
+                    </div>
+                </div>
+                <div class="col-xs-6 controls">
+                    <h4>Session Length</h4>
+                    <div class="btn-group">
+                        <div class="btn btn-default btn-lg switchDeduceSession" onclick="deduceSessionTime()">-</div>
+                        <div id="timer-session" class="btn btn-lg">25</div>
+                        <div class="btn btn-default btn-lg switchAddSession" onclick="addSessionTime()">+</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="countdown-clock" onclick="startTimer()">
+                        <div class="countdown-timer">
+                            <h2 id="sessionName">Current Session</h2>
+                            <h3 id="timeLeft">25</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="btn btn-default" onclick="reset()">Reset</div>
+                </div>
+        </div>
+    <div class="col-xs-12 white">
+        <h5 class="text-center">Made with <span style="color: red">&hearts;</span> by Gift</h5>
+      </div>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+    var sessionLength = 25;
+var breakLength = 5;
+var alarm = new Audio('http://www.orangefreesounds.com/wp-content/uploads/2016/06/Ringing-clock.mp3?_=1');
+var loop = 0;
+var clicks = 0;
+
+function btnReset() {
+    $('#sessionName').text('Current Session');
+        clearInterval(countInt);
+}
+
+
+function addSessionTime() {
+    sessionLength += 1;
+    $("#timer-session").text(sessionLength);
+    $("#timeLeft").text(sessionLength);
+    btnReset();
+}
+
+function deduceSessionTime() {
+    if (sessionLength > 1){
+        sessionLength -= 1;
+    } else {
+        sessionLength = 1;
+    }
+    $("#timer-session").text(sessionLength);
+    $("#timeLeft").text(sessionLength);
+    btnReset();
+}
+
+function deduceBreakTime() {
+    if (breakLength > 1){
+        breakLength -= 1;
+    } else {
+        breakLength = 1;
+    }
+    $("#timer-break").text(breakLength);
+    btnReset();
+}
+
+function addBreakTime(){
+    breakLength += 1;
+    $("#timer-break").text(breakLength);
+    btnReset();
+}
+
+function startTimer() {
+  if (clicks == 0) {
+    clicks += 1;
+    seconds = 0;
+    countDown(sessionLength, seconds);
+  } else if (clicks == 1) {
+    btnReset();
+    clicks -= 1;
+  }
+}
+
+function countDown(m,s) {
+    countInt = setInterval(function(){
+        
+    if (m == 0 && s == 0) {
+        clearInterval(countInt);
+        if (loop == 0) {
+            timeLeft = breakLength;
+            loop += 1;
+            $('#sessionName').text('Current Break');
+        } else {
+            timeLeft = sessionLength;
+            loop -= 1;
+            $('#sessionName').text('Current Session');
+        }
+        alarm.play();
+        countDown(timeLeft,0);
+    } else if (s != 0) {
+        if (s <= 10){
+            s -= 1;
+            timeLeft = m + ':0' + s;
+        } else {
+            s -= 1;
+            timeLeft = m + ':' + s;
+        }
+    } else if (s == 0) {
+        s = 59;
+        m -= 1;
+        timeLeft = m + ':' + s;
+    }
+        $('#timeLeft').text(timeLeft);
+        
+    }, 1000);
+}
+
+function reset() {
+    sessionLength = 25;
+    breakLength = 5;
+    $("#timer-session").text(sessionLength);
+    $("#timeLeft").text(sessionLength);
+    $("#timer-break").text(breakLength);
+    btnReset();
+}
+    </script>
+            
+</body>
+</html>
